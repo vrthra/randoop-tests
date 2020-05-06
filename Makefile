@@ -56,6 +56,7 @@ gen_tests: .gen_tests
 		--no-error-revealing-tests=true \
 		--junit-package-name=$(PKG_NAME).randoop \
 		--junit-output-dir=$(RANDOOP_TESTS_OUTPUT_DIR)/java 
+	touch .gen_tests
 
 gen_all_tests: build/classes.txt
 	for i in $$(seq 1 $$(wc -l build/classes.txt | sed -e 's# .*##g')); do \
