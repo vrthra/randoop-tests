@@ -1,0 +1,7 @@
+PROJECT_TAR=commons-csv-1.7-RC1.tar.gz
+PROJECT_WWW=https://github.com/apache/commons-csv/archive/$(PROJECT_TAR)
+PROJECT_DIR=build/commons-csv-commons-csv-1.7-RC1/
+PKG_NAME=org.apache.commons.csv
+JAR_NAME=commons-csv-1.7.jar
+
+TEST_PATH=$(PROJECT_DIR)src/test/

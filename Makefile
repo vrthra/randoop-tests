@@ -1,4 +1,4 @@
-project=csv
+project=collections
 include Makefile.$(project)
 
 ZCAT=zcat

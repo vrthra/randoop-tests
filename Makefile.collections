@@ -1,0 +1,6 @@
+PROJECT_TAR=commons-collections-4.4-RC1.tar.gz
+PROJECT_WWW=https://github.com/apache/commons-collections/archive/$(PROJECT_TAR)
+PROJECT_DIR=build/commons-collections-commons-collections-4.4-RC1/
+PKG_NAME=org.apache.commons.csv
+JAR_NAME=commons-collections4-4.4.jar
+TEST_PATH=$(PROJECT_DIR)src/test/
