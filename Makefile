@@ -1,8 +1,5 @@
-PROJECT_TAR=MATH_3_6_RC2.tar.gz
-PROJECT_WWW=https://github.com/apache/commons-math/archive/$(PROJECT_TAR)
-PROJECT_DIR=build/commons-math-MATH_3_6_RC2/
-PKG_NAME=org.apache.commons.math3
-JAR_NAME=commons-math3-3.6.jar
+project=csv
+include Makefile.$(project)
 
 ZCAT=zcat
 
@@ -28,7 +25,7 @@ tars/$(PROJECT_TAR): | tars
 	wget -c $(PROJECT_WWW)
 	mv $(PROJECT_TAR) tars
 
-build_project: $(JAR_NAME)
+build_project: $(JAR_PATH)
 
 $(JAR_PATH): tars/$(PROJECT_TAR) | build
 	cd build && $(ZCAT) ../tars/$(PROJECT_TAR) | tar -xvpf -
@@ -56,4 +53,33 @@ gen_tests_%: $(JAR_PATH) $(RANDOOP_JAR) build/classes.txt | build
 		--junit-package-name=$(PKG_NAME).randoop \
 		--junit-output-dir=$(RANDOOP_TESTS_OUTPUT_DIR)/java 
 	cat build/classname.txt >> tested_classes.txt
+
+gen_all_tests: build/classes.txt
+	for i in $$(seq 1 $$(wc -l build/classes.txt | sed -e 's# .*##g')); do \
+		echo $$i; \
+		$(MAKE) gen_tests_$$i; \
+		done
+
+
+save_tests: build/saved_tests.tar
+build/saved_tests.tar: | build
+	tar -cf build/saved_tests.tar_ $(TEST_PATH)
+	mv build/saved_tests.tar_ build/saved_tests.tar
+
+copy_tests: build/.copied
+build/.randooptests: build/saved_tests.tar
+	rm -rf $(TEST_PATH)/java
+	cp -r build/randoop/java/ $(TEST_PATH)
+	touch build/.randooptests
+
+run_randoop_tests: build/.randooptests
+	cd $(PROJECT_DIR) && mvn clean test -Drat.skip=true
+	cd $(PROJECT_DIR) && mvn -o \
+		-DoutputFormats=XML \
+		-DexportLineCoverage=true \
+		-DtimestampedReports=false \
+		org.pitest:pitest-maven:mutationCoverage \
+		-DfullMutationMatrix=true \
+		-Dmutators=ALL \
+		-Drat.skip=true
 
