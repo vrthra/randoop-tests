@@ -1,0 +1,15 @@
+--- pom.xml	2020-05-06 23:17:56.980708406 +0000
++++ build/commons-csv-commons-csv-1.7-RC1/pom.xml	2020-05-06 23:18:08.120708539 +0000
+@@ -165,6 +165,12 @@
+   <build>
+     <defaultGoal>clean verify apache-rat:check clirr:check javadoc:javadoc</defaultGoal>
+     <plugins>
++<!--build/plugins-->
++<plugin>
++    <groupId>org.pitest</groupId>
++    <artifactId>pitest-maven</artifactId>
++    <version>1.4.9</version>
++ </plugin>
+       <plugin>
+         <artifactId>maven-compiler-plugin</artifactId>
+         <configuration>

@@ -29,6 +29,7 @@ build_project: $(JAR_PATH)
 
 $(JAR_PATH): tars/$(PROJECT_TAR) | build
 	cd build && $(ZCAT) ../tars/$(PROJECT_TAR) | tar -xvpf -
+	cat tars/$(PROJECT_TAR).patch | (cd $(PROJECT_DIR) && patch pom.xml -p1)
 	cd $(PROJECT_DIR) && mvn clean compile package
 
 lib: ; mkdir -p lib
@@ -41,18 +42,20 @@ build/classes.txt: $(JAR_PATH)
 
 RANDOOP_TESTS_OUTPUT_DIR=build/randoop
 
-gen_tests_%: $(JAR_PATH) $(RANDOOP_JAR) build/classes.txt | build
-	cat build/classes.txt | sed -ne '$*p' > build/classname.txt
+#	cat build/classes.txt | sed -ne '$*p' > build/classname.txt
+#	cat build/classname.txt >> tested_classes.txt
+
+gen_tests: .gen_tests
+.gen_tests: $(JAR_PATH) $(RANDOOP_JAR) build/classes.txt | build
 	java -classpath $(RANDOOP_JAR):$(JAR_PATH):$(LIB_PATH) \
 		randoop.main.Main gentests \
-		--classlist=./build/classname.txt \
+		--classlist=./build/classes.txt \
 		--check-compilable=true \
 		--flaky-test-behavior=DISCARD \
-		--regression-test-basename=RT$*_ \
+		--regression-test-basename=RT_ \
 		--no-error-revealing-tests=true \
 		--junit-package-name=$(PKG_NAME).randoop \
 		--junit-output-dir=$(RANDOOP_TESTS_OUTPUT_DIR)/java 
-	cat build/classname.txt >> tested_classes.txt
 
 gen_all_tests: build/classes.txt
 	for i in $$(seq 1 $$(wc -l build/classes.txt | sed -e 's# .*##g')); do \
@@ -62,7 +65,7 @@ gen_all_tests: build/classes.txt
 
 
 save_tests: build/saved_tests.tar
-build/saved_tests.tar: | build
+build/saved_tests.tar: .gen_tests | build
 	tar -cf build/saved_tests.tar_ $(TEST_PATH)
 	mv build/saved_tests.tar_ build/saved_tests.tar
 
