@@ -1,4 +1,4 @@
-project=compress
+project=configuration
 include Makefile.$(project)
 
 ZCAT=zcat
@@ -48,8 +48,6 @@ build/classes.txt: build/$(JAR_NAME)
 
 RANDOOP_TESTS_OUTPUT_DIR=build/randoop
 
-#	cat build/classes.txt | sed -ne '$*p' > build/classname.txt
-#	cat build/classname.txt >> tested_classes.txt
 #		--testjar=./build/$(JAR_NAME) \
 
 gen_tests: .gen_tests
@@ -62,8 +60,22 @@ gen_tests: .gen_tests
 		--regression-test-basename=RT_ \
 		--no-error-revealing-tests=true \
 		--junit-package-name=$(PKG_NAME).randoop \
-		--junit-output-dir=$(RANDOOP_TESTS_OUTPUT_DIR)/java 
+		--junit-output-dir=$(RANDOOP_TESTS_OUTPUT_DIR)/java
 	touch .gen_tests
+
+gen_tests_%1: build/$(JAR_NAME) $(RANDOOP_JAR) build/classes.txt | build
+	cat build/classes.txt | sed -ne '$*p' > build/classname.txt
+	java -classpath $$(cat build/.dep-classpath):$(RANDOOP_JAR):build/$(JAR_NAME):$(LIB_PATH) \
+		randoop.main.Main gentests \
+		--classlist=./build/classname.txt \
+		--check-compilable=true \
+		--flaky-test-behavior=DISCARD \
+		--regression-test-basename=RT$*_ \
+		--no-error-revealing-tests=true \
+		--junit-package-name=$(PKG_NAME).randoop \
+		--junit-output-dir=$(RANDOOP_TESTS_OUTPUT_DIR)/java
+		cat build/classname.txt >> build/tested_classes.txt
+
 
 gen_all_tests: build/classes.txt
 	for i in $$(seq 1 $$(wc -l build/classes.txt | sed -e 's# .*##g')); do \
