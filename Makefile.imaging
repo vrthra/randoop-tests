@@ -2,5 +2,5 @@ PROJECT_TAR=commons-imaging-1.0-alpha1-RC3.tar.gz
 PROJECT_WWW=https://github.com/apache/commons-imaging/archive/$(PROJECT_TAR)
 PROJECT_DIR=build/commons-imaging-commons-imaging-1.0-alpha1-RC3/
 PKG_NAME=org.apache.commons.imaging
-JAR_NAME=commons-imaging-1.0.jar
+JAR_NAME=commons-imaging-1.0-alpha1.jar
 TEST_PATH=$(PROJECT_DIR)src/test/
