@@ -1,0 +1,15 @@
+--- pom.xml.orig	2020-05-07 10:34:25.070158070 +0200
++++ pom.xml	2020-05-07 10:34:39.109574457 +0200
+@@ -634,6 +634,12 @@
+       </plugins>
+     </pluginManagement>
+     <plugins>
++<!--build/plugins-->
++<plugin>
++    <groupId>org.pitest</groupId>
++    <artifactId>pitest-maven</artifactId>
++    <version>1.4.9</version>
++ </plugin>
+       <plugin>
+         <groupId>org.apache.maven.plugins</groupId>
+         <artifactId>maven-surefire-plugin</artifactId>
