@@ -1,0 +1,40 @@
+--- pom.xml.orig	2020-05-07 03:02:00.444109334 -0700
++++ pom.xml	2020-05-07 03:05:08.997036109 -0700
+@@ -388,8 +388,8 @@
+     <commons.jira.id>MATH</commons.jira.id>
+     <commons.jira.pid>12310485</commons.jira.pid>
+     <commons.encoding>UTF-8</commons.encoding>
+-    <maven.compiler.source>1.5</maven.compiler.source>
+-    <maven.compiler.target>1.5</maven.compiler.target>
++    <maven.compiler.source>1.6</maven.compiler.source>
++    <maven.compiler.target>1.6</maven.compiler.target>
+     <math.pmd.version>3.5</math.pmd.version>
+     <math.findbugs.version>3.0.2</math.findbugs.version>
+     <math.checkstyle.version>2.17</math.checkstyle.version>
+@@ -418,6 +418,26 @@
+ 
+   <build>
+       <plugins>
++<!--build/plugins-->
++<plugin>
++    <groupId>org.pitest</groupId>
++    <artifactId>pitest-maven</artifactId>
++    <version>1.4.9</version>
++</plugin>
++<plugin>
++    <artifactId>maven-dependency-plugin</artifactId>
++    <executions>
++        <execution>
++            <phase>prepare-package</phase>
++            <goals>
++                <goal>copy-dependencies</goal>
++            </goals>
++            <configuration>
++                <outputDirectory>${project.build.directory}/lib</outputDirectory>
++            </configuration>
++        </execution>
++    </executions>
++</plugin>
+         <plugin>
+           <groupId>org.apache.maven.plugins</groupId>
+           <artifactId>maven-surefire-plugin</artifactId>

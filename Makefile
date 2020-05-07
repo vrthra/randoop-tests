@@ -105,6 +105,7 @@ build/saved_tests.tar: .gen_tests | build
 copy_tests: build/.copied
 build/.randooptests: build/saved_tests.tar
 	rm -rf $(TEST_PATH)/java
+	rm -rf $(PROJECT_DIR)/target/test-classes
 	cp -r build/randoop/java/ $(TEST_PATH)
 	touch build/.randooptests
 
