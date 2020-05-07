@@ -110,6 +110,7 @@ build/.randooptests: build/saved_tests.tar
 	touch build/.randooptests
 
 #	-cd $(PROJECT_DIR) && mvn org.pitest:pitest-maven:mutationCoverage -Dmutators=NONE -Drat.skip=true
+#		-Dmutators=ALL
 
 run_randoop_tests: build/.randooptests
 	cd $(PROJECT_DIR) && mvn clean test -Drat.skip=true
@@ -119,6 +120,5 @@ run_randoop_tests: build/.randooptests
 		-DtimestampedReports=false \
 		org.pitest:pitest-maven:mutationCoverage \
 		-DfullMutationMatrix=true \
-		-Dmutators=ALL \
 		-Drat.skip=true
 
