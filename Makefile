@@ -25,29 +25,31 @@ tars/$(PROJECT_TAR): | tars
 	wget -c $(PROJECT_WWW)
 	mv $(PROJECT_TAR) tars
 
-build_project: $(JAR_PATH)
+build_project: build/$(JAR_NAME)
 
-$(JAR_PATH): tars/$(PROJECT_TAR) | build
+build/$(JAR_NAME): tars/$(PROJECT_TAR) | build
 	cd build && $(ZCAT) ../tars/$(PROJECT_TAR) | tar -xvpf -
 	cat tars/$(PROJECT_TAR).patch | (cd $(PROJECT_DIR) && patch pom.xml -p1)
-	cd $(PROJECT_DIR) && mvn clean compile package
+	cd $(PROJECT_DIR) && mvn clean compile package -Drat.skip=true
+	cp $(JAR_PATH) build/
 
 lib: ; mkdir -p lib
 tars: ; mkdir -p tars
 build: ; mkdir -p build
 
-build/classes.txt: $(JAR_PATH)
-	jar -tf $(JAR_PATH) | grep '\.class$$' | sed -e 's#.class##g' -e 's#/#.#g' | grep -v '[$$]' > $@_
+build/classes.txt: build/$(JAR_NAME)
+	jar -tf build/$(JAR_NAME) | grep '\.class$$' | sed -e 's#.class##g' -e 's#/#.#g' | grep -v '[$$]' > $@_
 	mv $@_ $@
 
 RANDOOP_TESTS_OUTPUT_DIR=build/randoop
 
 #	cat build/classes.txt | sed -ne '$*p' > build/classname.txt
 #	cat build/classname.txt >> tested_classes.txt
+#		--testjar=./build/$(JAR_NAME) \
 
 gen_tests: .gen_tests
-.gen_tests: $(JAR_PATH) $(RANDOOP_JAR) build/classes.txt | build
-	java -classpath $(RANDOOP_JAR):$(JAR_PATH):$(LIB_PATH) \
+.gen_tests: build/$(JAR_NAME) $(RANDOOP_JAR) build/classes.txt | build
+	java -classpath $(RANDOOP_JAR):build/$(JAR_NAME):$(LIB_PATH) \
 		randoop.main.Main gentests \
 		--classlist=./build/classes.txt \
 		--check-compilable=true \
@@ -75,6 +77,8 @@ build/.randooptests: build/saved_tests.tar
 	rm -rf $(TEST_PATH)/java
 	cp -r build/randoop/java/ $(TEST_PATH)
 	touch build/.randooptests
+
+#	-cd $(PROJECT_DIR) && mvn org.pitest:pitest-maven:mutationCoverage -Dmutators=NONE -Drat.skip=true
 
 run_randoop_tests: build/.randooptests
 	cd $(PROJECT_DIR) && mvn clean test -Drat.skip=true
