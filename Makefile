@@ -1,4 +1,4 @@
-project=configuration
+project=csv
 include Makefile.$(project)
 
 ZCAT=zcat
@@ -32,7 +32,7 @@ build/$(JAR_NAME): tars/$(PROJECT_TAR) | build
 	cd $(PROJECT_DIR) && cp pom.xml pom.xml.orig
 	cat tars/$(PROJECT_TAR).patch | (cd $(PROJECT_DIR) && patch pom.xml -p1)
 	cd $(PROJECT_DIR) && \
-		mvn clean compile package -Drat.skip=true -Dmaven.test.skip=true
+		mvn clean compile test-compile package -Drat.skip=true -Dmaven.test.skip=true
 	find $(PROJECT_DIR)/target/lib -name \*.jar |\
 		xargs echo |\
 		sed -e 's# #:#g' > build/.dep-classpath
