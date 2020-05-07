@@ -40,7 +40,7 @@ build/$(JAR_NAME): tars/$(PROJECT_TAR) | build
 
 lib: ; mkdir -p lib
 tars: ; mkdir -p tars
-build: ; mkdir -p build
+build: ; mkdir -p build/my_classes
 
 build/classes.txt: build/$(JAR_NAME)
 	jar -tf build/$(JAR_NAME) | grep '\.class$$' | sed -e 's#.class##g' -e 's#/#.#g' | grep -v '[$$]' > $@_
@@ -63,18 +63,31 @@ gen_tests: .gen_tests
 		--junit-output-dir=$(RANDOOP_TESTS_OUTPUT_DIR)/java
 	touch .gen_tests
 
-gen_tests_%1: build/$(JAR_NAME) $(RANDOOP_JAR) build/classes.txt | build
-	cat build/classes.txt | sed -ne '$*p' > build/classname.txt
+mkclasslst: build/.classlst
+
+build/.classlst: build/classes.txt | build
+	for i in $$(seq 1 $$(wc -l build/classes.txt | sed -e 's# .*##g')); do \
+		cat build/classes.txt | sed -ne '$$ip' > build/my_classes/$$i.clz; \
+		done
+	touch build/.classlst
+
+build/my_classes/%.clz: build/classes.txt
+		cat build/classes.txt | sed -ne '$*p' > build/my_classes/$*.clz;
+
+gen_tests_%1: build/my_classes/%.done
+
+build/my_classes/%.done: build/$(JAR_NAME) $(RANDOOP_JAR) build/my_classes/%.clz | build
 	java -classpath $$(cat build/.dep-classpath):$(RANDOOP_JAR):build/$(JAR_NAME):$(LIB_PATH) \
 		randoop.main.Main gentests \
-		--classlist=./build/classname.txt \
+		--classlist=./build/my_classes/$*.clz \
 		--check-compilable=true \
 		--flaky-test-behavior=DISCARD \
 		--regression-test-basename=RT$*_ \
 		--no-error-revealing-tests=true \
 		--junit-package-name=$(PKG_NAME).randoop \
 		--junit-output-dir=$(RANDOOP_TESTS_OUTPUT_DIR)/java
-		cat build/classname.txt >> build/tested_classes.txt
+		cat build/my_classes/$*.clz >> build/tested_classes.txt
+		touch build/my_classes/$*.done
 
 
 gen_all_tests: build/classes.txt
