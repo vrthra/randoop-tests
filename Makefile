@@ -1,4 +1,4 @@
-project=collections
+project=compress
 include Makefile.$(project)
 
 ZCAT=zcat

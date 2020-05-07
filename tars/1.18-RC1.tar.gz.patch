@@ -1,0 +1,15 @@
+--- pom.xml.orig	2020-05-07 09:29:01.584936077 +0200
++++ pom.xml	2020-05-07 09:29:35.675511958 +0200
+@@ -330,6 +330,12 @@
+       </plugins>
+     </pluginManagement>
+     <plugins>
++<!--build/plugins-->
++<plugin>
++    <groupId>org.pitest</groupId>
++    <artifactId>pitest-maven</artifactId>
++    <version>1.4.9</version>
++ </plugin>
+       <plugin>
+         <!-- create the source and binary assemblies -->
+         <artifactId>maven-assembly-plugin</artifactId>
