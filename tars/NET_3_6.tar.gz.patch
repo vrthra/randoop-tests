@@ -1,0 +1,30 @@
+--- pom.xml.orig	2020-05-07 15:16:24.240296711 -0700
++++ pom.xml	2020-05-07 15:16:46.781273383 -0700
+@@ -231,7 +231,26 @@
+           </plugins>
+         </pluginManagement>
+         <plugins>
+-
++<!--build/plugins-->
++<plugin>
++    <groupId>org.pitest</groupId>
++    <artifactId>pitest-maven</artifactId>
++    <version>1.4.9</version>
++</plugin>
++<plugin>
++    <artifactId>maven-dependency-plugin</artifactId>
++    <executions>
++        <execution>
++            <phase>prepare-package</phase>
++            <goals>
++                <goal>copy-dependencies</goal>
++            </goals>
++            <configuration>
++                <outputDirectory>${project.build.directory}/lib</outputDirectory>
++            </configuration>
++        </execution>
++    </executions>
++</plugin>
+             <!-- Exclude examples from binary jar -->
+             <plugin>
+                 <groupId>org.apache.maven.plugins</groupId>

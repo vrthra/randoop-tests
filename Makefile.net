@@ -1,0 +1,6 @@
+PROJECT_TAR=NET_3_6.tar.gz
+PROJECT_WWW=https://github.com/apache/commons-net/archive/$(PROJECT_TAR)
+PROJECT_DIR=build/commons-net-NET_3_6
+PKG_NAME=org.apache.commons.net
+JAR_NAME=commons-net-3.6.jar
+TEST_PATH=$(PROJECT_DIR)src/test/
