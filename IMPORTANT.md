@@ -9,5 +9,6 @@ However, the jar `build/commons-math-MATH_3_6_RC2/target/commons-math3-3.6.jar` 
 
 ```
 cp build/commons-math-MATH_3_6_RC2 && mvn dependency:copy-dependencies -DoutputDirectory=target/lib
+find build/commons-math-MATH_3_6_RC2/target/lib -name \*.jar | xargs echo | sed -e 's# #:#g' > build/.dep-classpath
 cp build/commons-math-MATH_3_6_RC2/target/commons-math3-3.6.jar build/
 ```
