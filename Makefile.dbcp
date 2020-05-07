@@ -1,0 +1,7 @@
+PROJECT_TAR=commons-dbcp-2.6.0-RC1.tar.gz
+PROJECT_WWW=https://github.com/apache/commons-dbcp/archive/$(PROJECT_TAR)
+PROJECT_DIR=build/commons-dbcp-commons-dbcp-2.6.0-RC1/
+PKG_NAME=org.apache.commons.dbcp2
+JAR_NAME=commons-dbcp2-2.6.0.jar
+
+TEST_PATH=$(PROJECT_DIR)src/test/
