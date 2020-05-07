@@ -29,8 +29,13 @@ build_project: build/$(JAR_NAME)
 
 build/$(JAR_NAME): tars/$(PROJECT_TAR) | build
 	cd build && $(ZCAT) ../tars/$(PROJECT_TAR) | tar -xvpf -
+	cd $(PROJECT_DIR) && cp pom.xml pom.xml.orig
 	cat tars/$(PROJECT_TAR).patch | (cd $(PROJECT_DIR) && patch pom.xml -p1)
-	cd $(PROJECT_DIR) && mvn clean compile package -Drat.skip=true -Dmaven.test.skip=true
+	cd $(PROJECT_DIR) && \
+		mvn clean compile package -Drat.skip=true -Dmaven.test.skip=true
+	find $(PROJECT_DIR)/target/lib -name \*.jar |\
+		xargs echo |\
+		sed -e 's# #:#g' > build/.dep-classpath
 	cp $(JAR_PATH) build/
 
 lib: ; mkdir -p lib
@@ -49,7 +54,7 @@ RANDOOP_TESTS_OUTPUT_DIR=build/randoop
 
 gen_tests: .gen_tests
 .gen_tests: build/$(JAR_NAME) $(RANDOOP_JAR) build/classes.txt | build
-	java -classpath $(RANDOOP_JAR):build/$(JAR_NAME):$(LIB_PATH) \
+	java -classpath $$(cat build/.dep-classpath):$(RANDOOP_JAR):build/$(JAR_NAME):$(LIB_PATH) \
 		randoop.main.Main gentests \
 		--classlist=./build/classes.txt \
 		--check-compilable=true \

@@ -1,6 +1,6 @@
---- pom.xml.orig	2020-05-07 10:34:25.070158070 +0200
-+++ pom.xml	2020-05-07 10:34:39.109574457 +0200
-@@ -634,6 +634,12 @@
+--- pom.xml.orig	2020-05-07 10:51:26.973634265 +0200
++++ pom.xml	2020-05-07 10:51:51.808433410 +0200
+@@ -634,6 +634,26 @@
        </plugins>
      </pluginManagement>
      <plugins>
@@ -9,7 +9,21 @@
 +    <groupId>org.pitest</groupId>
 +    <artifactId>pitest-maven</artifactId>
 +    <version>1.4.9</version>
-+ </plugin>
++</plugin>
++<plugin>
++    <artifactId>maven-dependency-plugin</artifactId>
++    <executions>
++        <execution>
++            <phase>prepare-package</phase>
++            <goals>
++                <goal>copy-dependencies</goal>
++            </goals>
++            <configuration>
++                <outputDirectory>${project.build.directory}/lib</outputDirectory>
++            </configuration>
++        </execution>
++    </executions>
++</plugin>
        <plugin>
          <groupId>org.apache.maven.plugins</groupId>
          <artifactId>maven-surefire-plugin</artifactId>
