@@ -30,7 +30,7 @@ build_project: build/$(JAR_NAME)
 build/$(JAR_NAME): tars/$(PROJECT_TAR) | build
 	cd build && $(ZCAT) ../tars/$(PROJECT_TAR) | tar -xvpf -
 	cat tars/$(PROJECT_TAR).patch | (cd $(PROJECT_DIR) && patch pom.xml -p1)
-	cd $(PROJECT_DIR) && mvn clean compile package -Drat.skip=true e -Dmaven.test.skip=true
+	cd $(PROJECT_DIR) && mvn clean compile package -Drat.skip=true -Dmaven.test.skip=true
 	cp $(JAR_PATH) build/
 
 lib: ; mkdir -p lib
