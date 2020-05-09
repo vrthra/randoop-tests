@@ -10,6 +10,8 @@ JAR_PATH=$(PROJECT_DIR)/target/$(JAR_NAME)
 
 LIB_PATH=$(shell ruby -e  'puts Dir[Dir.pwd + "/lib/*.jar"].join(":")')
 
+.SECONDARY:
+
 libpath:
 	echo -- -$(LIB_PATH)-
 
@@ -78,7 +80,7 @@ gen_tests_%: build/my_classes/%.done
 	@echo done
 
 build/my_classes/%.done: build/$(JAR_NAME) $(RANDOOP_JAR) build/my_classes/%.clz | build
-	java -classpath $$(cat build/.dep-classpath):$(RANDOOP_JAR):build/$(JAR_NAME):$(LIB_PATH) \
+	/usr/bin/timeout -k 3600 java -classpath $$(cat build/.dep-classpath):$(RANDOOP_JAR):build/$(JAR_NAME):$(LIB_PATH) \
 		randoop.main.Main gentests \
 		--classlist=./build/my_classes/$*.clz \
 		--check-compilable=true \
