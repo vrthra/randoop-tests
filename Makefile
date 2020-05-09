@@ -74,7 +74,8 @@ build/.classlst: build/classes.txt | build
 build/my_classes/%.clz: build/classes.txt
 		cat build/classes.txt | sed -ne '$*p' > build/my_classes/$*.clz;
 
-gen_tests_%1: build/my_classes/%.done
+gen_tests_%: build/my_classes/%.done
+	@echo done
 
 build/my_classes/%.done: build/$(JAR_NAME) $(RANDOOP_JAR) build/my_classes/%.clz | build
 	java -classpath $$(cat build/.dep-classpath):$(RANDOOP_JAR):build/$(JAR_NAME):$(LIB_PATH) \
@@ -92,8 +93,8 @@ build/my_classes/%.done: build/$(JAR_NAME) $(RANDOOP_JAR) build/my_classes/%.clz
 
 gen_all_tests: build/classes.txt
 	for i in $$(seq 1 $$(wc -l build/classes.txt | sed -e 's# .*##g')); do \
-		echo $$i; \
-		$(MAKE) gen_tests_$$i; \
+		echo $(MAKE) gen_tests_$$i project=$(project); \
+		$(MAKE) gen_tests_$$i project=$(project); \
 		done
 
 
